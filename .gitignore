@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Machine learning datasets and generated splits
+Celebrity Faces Dataset/
+Celebrity Faces Dataset_split/
+
+# YOLO training outputs
+runs/
+
+# Model weights and checkpoints
+*.pt
+*.pth
+*.onnx
+
+# Logs and local tooling
+*.log
+.vscode/
+.DS_Store
+Thumbs.db
