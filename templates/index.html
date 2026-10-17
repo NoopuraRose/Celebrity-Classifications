@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Celebrity Vision</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { ink: '#101828', violet: '#6d5dfc', mint: '#c9f9e9' },
+          boxShadow: { glow: '0 24px 80px rgba(109, 93, 252, .18)' }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+  <main class="relative isolate overflow-hidden">
+    <div class="absolute -left-32 -top-32 -z-10 h-96 w-96 rounded-full bg-violet-600/25 blur-3xl"></div>
+    <div class="absolute -right-24 top-72 -z-10 h-96 w-96 rounded-full bg-cyan-400/10 blur-3xl"></div>
+
+    <div class="mx-auto max-w-6xl px-6 py-10 sm:py-16">
+      <header class="mb-12 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="grid h-11 w-11 place-items-center rounded-2xl bg-violet-500 text-xl shadow-lg shadow-violet-500/30">✦</div>
+          <span class="font-semibold tracking-tight">Celebrity Vision</span>
+        </div>
+        <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-slate-300">YOLO classification</span>
+      </header>
+
+      <section class="grid items-center gap-12 lg:grid-cols-[1.05fr_.95fr]">
+        <div>
+          <p class="mb-5 text-sm font-semibold uppercase tracking-[.24em] text-mint">AI-powered recognition</p>
+          <h1 class="max-w-xl text-5xl font-bold leading-[1.05] tracking-tight sm:text-7xl">Who’s in the picture?</h1>
+          <p class="mt-6 max-w-lg text-lg leading-8 text-slate-400">Upload a celebrity photo and let your trained model identify the face in seconds.</p>
+          <div class="mt-8 flex flex-wrap gap-3 text-sm text-slate-400">
+            <span class="rounded-full bg-white/5 px-4 py-2">17 celebrity classes</span>
+            <span class="rounded-full bg-white/5 px-4 py-2">Up to 10 MB</span>
+          </div>
+        </div>
+
+        <div class="rounded-[2rem] border border-white/10 bg-white/[.07] p-3 shadow-glow backdrop-blur-xl sm:p-5">
+          <div class="rounded-[1.5rem] bg-white p-6 text-ink sm:p-8">
+            <div class="mb-6">
+              <h2 class="text-2xl font-bold">Try a prediction</h2>
+              <p class="mt-1 text-sm text-slate-500">JPG, PNG, WEBP, or BMP</p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="space-y-5">
+              <label for="image" class="group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 px-5 py-10 text-center transition hover:border-violet-400 hover:bg-violet-50">
+                <span class="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-violet-100 text-2xl text-violet-600">↑</span>
+                <span class="font-semibold text-slate-800">Choose an image</span>
+                <span id="filename" class="mt-2 text-sm text-slate-500">or drag and drop it here</span>
+                <input id="image" name="image" type="file" accept="image/*" required class="sr-only" onchange="document.getElementById('filename').textContent = this.files[0]?.name || 'or drag and drop it here'">
+              </label>
+              <button type="submit" class="w-full rounded-xl bg-violet-600 px-5 py-3.5 font-semibold text-white shadow-lg shadow-violet-600/25 transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-200">Predict celebrity <span class="ml-1">→</span></button>
+            </form>
+
+            {% if error %}
+            <div class="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error }}</div>
+            {% endif %}
+
+            {% if result %}
+            <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200">
+              {% if image_preview %}<img src="{{ image_preview }}" alt="Uploaded celebrity" class="h-52 w-full object-cover">{% endif %}
+              <div class="p-5">
+                <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Best match</p>
+                <div class="mt-1 flex items-end justify-between gap-3">
+                  <h3 class="text-2xl font-bold text-ink">{{ result.label }}</h3>
+                  <span class="rounded-full bg-mint px-3 py-1 text-sm font-bold text-emerald-800">{{ '%.2f'|format(result.confidence * 100) }}%</span>
+                </div>
+                <div class="mt-5 space-y-3">
+                  {% for prediction in result.top_predictions %}
+                  <div>
+                    <div class="mb-1 flex justify-between text-xs text-slate-500"><span>{{ prediction.label }}</span><span>{{ '%.2f'|format(prediction.confidence * 100) }}%</span></div>
+                    <div class="h-2 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full bg-violet-500" style="width: {{ prediction.confidence * 100 }}%"></div></div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            <p class="mt-5 text-center text-xs text-slate-400">Model: {{ model_path }}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

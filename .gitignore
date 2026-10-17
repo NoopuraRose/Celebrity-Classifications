@@ -17,6 +17,11 @@ ENV/
 # Jupyter
 .ipynb_checkpoints/
 
+# Flask runtime files
+instance/
+uploads/
+.pytest_cache/
+
 # Machine learning datasets and generated splits
 Celebrity Faces Dataset/
 Celebrity Faces Dataset_split/
